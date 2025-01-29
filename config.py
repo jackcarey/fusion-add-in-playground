@@ -7,9 +7,11 @@ import os
 
 DEBUG = True
 
+# repo root - fusion-add-in-playground
+# todo: change this to something more useful
 ADDIN_NAME = os.path.basename(os.path.dirname(__file__))
 
-COMPANY_NAME = 'NotAutodesk'
+COMPANY_NAME = 'CareyJack'
 
 # FIXME add good comments
 design_workspace = 'FusionSolidEnvironment'

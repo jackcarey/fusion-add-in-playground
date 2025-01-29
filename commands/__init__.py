@@ -7,10 +7,12 @@ from .Everything import entry as everything
 from .HelloWorld import entry as hello_world
 from .Selections import entry as selections
 from .Table import entry as table
+from .SomethingDifferent import entry as something_different
 
 # This Template will automatically call the start() and stop() functions.
 # By default the order you add the commands to this list will be the order they appear in the UI
 commands = [
+    something_different,
     hello_world,
     basic,
     selections,

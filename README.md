@@ -1,5 +1,5 @@
 # fusion-add-in-playground
-Making a Fusion add-in...
+Making a Fusion add-in for ... _something?_
 
 Steps taken:
 
@@ -8,3 +8,9 @@ Steps taken:
 1. copied `CommandSample` add-in directly from Fusion. Utilities > Add-ins menu. ![CommandSample in the UI](docs/CommandSampleSelection.png)
 2. renamed it to `JacksAddinPlayground`
 3. moved the existing scripts to a custom tab ![custom tab](docs/custom%20toolbar%20tab.png)
+4. added a custom command stub called 'SomethingDifferent'.
+
+To-do: 
+
+1. Each `entry` file could be refactored such that duplicated code in `start()` and `stop()` is put into `general_utils`.
+2. Something actually useful with the Fusion API...

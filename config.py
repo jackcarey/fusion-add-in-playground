@@ -9,12 +9,12 @@ DEBUG = True
 
 ADDIN_NAME = os.path.basename(os.path.dirname(__file__))
 
-COMPANY_NAME = 'ACME'
+COMPANY_NAME = 'NotAutodesk'
 
 # FIXME add good comments
 design_workspace = 'FusionSolidEnvironment'
-tools_tab_id = "ToolsTab"
-my_tab_name = "test"  # Only used if creating a custom Tab
+tools_tab_id = "JacksTab"
+my_tab_name = "Jack"  # Only used if creating a custom Tab
 
 my_panel_id = f'{ADDIN_NAME}_panel_2'
 my_panel_name = ADDIN_NAME

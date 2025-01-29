@@ -2,7 +2,7 @@
 	"autodeskProduct":	"Fusion",
 	"type":	"addin",
 	"id":	"ccc2cdc0-37e4-4c1f-9532-1c361b30c4df",
-	"author":	"Jack Carey (original: Patrick Rainsberry)",
+	"author":	"Jack Carey",
 	"description":	{
 		"":	"A sample Fusion Addin to demonstrate various UI elements and treat as a playground for features."
 	},

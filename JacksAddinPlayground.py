@@ -13,7 +13,7 @@ def run(context):
         if not context['IsApplicationStartup']:
             app = adsk.core.Application.get()
             ui = app.userInterface
-            ui.messageBox('A new "COMMANDSSAMPLE" panel containing several commands has been added to the "UTILITIES" tab.', 'Command Samples')
+            ui.messageBox('A new "JACK" tab containing several panels and commands has been added.', 'Jacks Add-in Playground')
     
         # This will run the start function in each of your commands as defined in commands/__init__.py
         commands.start()

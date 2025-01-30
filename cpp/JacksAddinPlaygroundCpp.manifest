@@ -1,0 +1,15 @@
+{
+	"autodeskProduct":	"Fusion",
+	"type":	"addin",
+	"author":	"jackcarey",
+	"description":	{
+		"":	"A playground for a Fusion add-in in C++"
+	},
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true,
+	"id":	"5f4448d0-e27d-4be8-9dae-888d3c52b111",
+	"version":	"0",
+	"runOnStartup":	false,
+	"sourcewindows":	"JacksAddinPlaygroundCpp.vcxproj",
+	"sourcemac":	"JacksAddinPlaygroundCpp.xcodeproj"
+}

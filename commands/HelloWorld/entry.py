@@ -19,7 +19,7 @@ ui = app.userInterface
 CMD_NAME = os.path.basename(os.path.dirname(__file__))
 CMD_ID = f'{config.COMPANY_NAME}_{config.ADDIN_NAME}_{CMD_NAME}'
 CMD_Description = 'Welcome to the Fusion API'
-IS_PROMOTED = True
+IS_PROMOTED = False
 
 # Global variables by referencing values from /config.py
 WORKSPACE_ID = config.design_workspace

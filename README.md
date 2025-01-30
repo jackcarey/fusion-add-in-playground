@@ -8,7 +8,7 @@ Steps taken:
 1. copied `CommandSample` add-in directly from Fusion. Utilities > Add-ins menu. ![CommandSample in the UI](docs/CommandSampleSelection.png)
 2. renamed it to `JacksAddinPlayground`
 3. moved the existing scripts to a custom tab ![custom tab](docs/custom%20toolbar%20tab.png)
-4. added a custom command stub called 'SomethingDifferent'.
+4. added a custom command called 'SomethingDifferent' that copies 'Browser', but displays jackcarey.co.uk instead of the local HTML. ![external content](docs/external%20HTML%20content.png)
 
 To-do: 
 

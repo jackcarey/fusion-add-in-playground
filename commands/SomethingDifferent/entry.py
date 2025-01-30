@@ -18,8 +18,8 @@ ui = app.userInterface
 
 CMD_NAME = os.path.basename(os.path.dirname(__file__))
 CMD_ID = f'{config.COMPANY_NAME}_{config.ADDIN_NAME}_{CMD_NAME}'
-CMD_Description = 'Idk yet'
-IS_PROMOTED = False
+CMD_Description = 'Idk what this does yet'
+IS_PROMOTED = True
 
 # Global variables by referencing values from /config.py
 WORKSPACE_ID = config.design_workspace
@@ -98,17 +98,34 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
 
     # Connect to the events that are needed by this command.
     futil.add_handler(args.command.execute, command_execute, local_handlers=local_handlers)
+    futil.add_handler(args.command.inputChanged, command_input_changed, local_handlers=local_handlers)
     futil.add_handler(args.command.destroy, command_destroy, local_handlers=local_handlers)
+    futil.add_handler(args.command.incomingFromHTML, browser_incoming, local_handlers=local_handlers)
 
     inputs = args.command.commandInputs
 
-    # Simple text input box
-    inputs.addTextBoxCommandInput('text_box', 'Some Text', 'Enter some text', 1, False)
+    input_box = inputs.addStringValueInput('input_box', 'Send to HTML', 'Message from Command')
 
-    # Create a value input field and set the default using 1 unit of the default length unit.
-    defaultLengthUnits = app.activeProduct.unitsManager.defaultLengthUnits
-    default_value = adsk.core.ValueInput.createByString('1')
-    inputs.addValueInput('value_input', 'Some Value', defaultLengthUnits, default_value)
+    # Create a selection input, apply filters and set the selection limits
+    selection_input = inputs.addSelectionInput('selection_input', 'Some Selection', 'Select Something')
+    selection_input.addSelectionFilter('SolidBodies')
+    selection_input.addSelectionFilter('RootComponents')
+    selection_input.addSelectionFilter('Occurrences')
+    selection_input.setSelectionLimits(1, 1)
+
+    # This text box will be updated by the embedded browser
+    default_message = 'Message from Browser.<br>Update me from the Browser form'
+    incoming_box = inputs.addTextBoxCommandInput('incoming_box', 'Name', default_message, 2, True)
+    incoming_box.isFullWidth = True
+
+    # Create a browser input (cleanup for windows)
+    browser_input_url = os.path.join('https://jackcarey.co.uk')
+    browser_input_url = browser_input_url.replace('\\', '/')
+
+    # Create a browser input
+    minimum_height = 300
+    browser_input = inputs.addBrowserCommandInput('browser_input', 'Browser Input', browser_input_url, minimum_height)
+    browser_input.isFullWidth = True
 
 
 # This function will be called when the user clicks the OK button in the command dialog.
@@ -116,13 +133,75 @@ def command_execute(args: adsk.core.CommandEventArgs):
     futil.log(f'{CMD_NAME} Command Execute Event')
 
     inputs = args.command.commandInputs
-    text_box: adsk.core.TextBoxCommandInput = inputs.itemById('text_box')
-    value_input: adsk.core.ValueCommandInput = inputs.itemById('value_input')
+    selection_input: adsk.core.SelectionCommandInput = inputs.itemById('selection_input')
 
-    text = text_box.text
-    expression = value_input.expression
-    msg = f'Your text: {text}<br>Your value: {expression}'
+    selection = selection_input.selection(0)
+    selected_entity = selection.entity
+    selection_name = selected_entity.name
+    selection_type = selected_entity.objectType
+    msg = f'Your selection is named: {selection_name}<br>It is a: {selection_type}'
     ui.messageBox(msg)
+
+
+# This function will be called when the user changes anything in the command dialog.
+def command_input_changed(args: adsk.core.InputChangedEventArgs):
+    changed_input = args.input
+    inputs = args.inputs
+    futil.log(f'{CMD_NAME} Input Changed Event fired from a change to {changed_input.id}')
+
+    selection_input: adsk.core.SelectionCommandInput = inputs.itemById('selection_input')
+    input_box: adsk.core.StringValueCommandInput = inputs.itemById('input_box')
+    browser_input: adsk.core.BrowserCommandInput = inputs.itemById('browser_input')
+
+    action = None
+    data = {}
+    if changed_input.id == 'selection_input':
+        action = 'updateSelection'
+        if selection_input.selectionCount > 0:
+            selected_entity = selection_input.selection(0).entity
+            data = {
+                "selection_name": selected_entity.name,
+                "selection_type": selected_entity.objectType
+            }
+        else:
+            data = {
+                "selection_name": 'Nothing Selected',
+                "selection_type": 'Nothing Selected'
+            }
+    elif changed_input.id == 'input_box':
+        action = 'updateMessage'
+        data = {
+            "message": input_box.value,
+        }
+
+    if action is not None:
+        response = browser_input.sendInfoToHTML(action, json.dumps(data))
+
+
+# Use this to handle events sent from javascript in your palette.
+def browser_incoming(html_args: adsk.core.HTMLEventArgs):
+
+    # Read message sent from browser input javascript function
+    message_data = json.loads(html_args.data)
+    message_action = html_args.action
+
+    # Get Command Inputs
+    browser_input = html_args.browserCommandInput
+    inputs = browser_input.commandInputs
+    incoming_box: adsk.core.TextBoxCommandInput = inputs.itemById('incoming_box')
+
+    # Update Command UI from form value from HTML/Javascript
+    if message_action == 'formMessage':
+        formInputValue = message_data.get('formInputValue', 'textBoxValue not sent')
+        timeStamp = message_data.get('timeStamp', 'timeStamp not sent')
+
+        msg = f'<b>Form Input Value</b>: {formInputValue}<br/><b>Time Stamp</b>: {timeStamp}'
+        incoming_box.formattedText = msg
+
+    # Javascript is expecting a response
+    now = datetime.now()
+    currentTime = now.strftime('%H:%M:%S')
+    html_args.returnData = f'OK - {currentTime}'
 
 
 # This function will be called when the user completes the command.

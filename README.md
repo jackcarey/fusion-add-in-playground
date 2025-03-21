@@ -1,4 +1,7 @@
 # fusion-add-in-playground
+
+⚠️ this is very much unfinished and likely never will be, it's merely to demonstrate some customizations. 
+
 Making a Fusion add-in for ... _something?_
 
 ## Python
